@@ -1,7 +1,11 @@
 package com.example.movies;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,14 +31,15 @@ public class MainActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+        initViews();
 
-        recyclerView = findViewById(R.id.RecyclerViewMovies);
         movieAdapter = new MovieAdapter();
 
         recyclerView.setAdapter(movieAdapter);
@@ -46,11 +51,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Movie> movies) {
                 movieAdapter.setMovieList(movies);
-                Log.d("MainActivity", movies.toString());
             }
         });
 
-        viewModel.loadMoviesFromInternet();
+        viewModel.getIsLoading().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading){
+                    progressBar.setVisibility(VISIBLE);
+                } else {
+                    progressBar.setVisibility(GONE);
+                }
+            }
+        });
+
+        movieAdapter.setOnReachEndListener(new MovieAdapter.onReachEndListener() {
+            @Override
+            public void onReachEnd() {
+                viewModel.loadMoviesFromInternet();
+            }
+        });
 
     }
+
+    public void initViews(){
+        progressBar = findViewById(R.id.ProgressBarLoading);
+        recyclerView = findViewById(R.id.RecyclerViewMovies);
+    }
+
 }
