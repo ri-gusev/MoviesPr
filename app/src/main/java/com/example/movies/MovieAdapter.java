@@ -18,13 +18,18 @@ import com.bumptech.glide.Glide;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHoder>{
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder>{
 
     private List<Movie> movieList = new ArrayList<>();
     private onReachEndListener onReachEndListener;
+    private onClickListener onClickListener;
 
     public void setOnReachEndListener(MovieAdapter.onReachEndListener onReachEndListener) {
         this.onReachEndListener = onReachEndListener;
+    }
+
+    public void setOnClickListener(MovieAdapter.onClickListener onClickListener) {
+        this.onClickListener = onClickListener;
     }
 
     public void setMovieList(List<Movie> movieList) {
@@ -34,18 +39,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHod
 
     @NonNull
     @Override
-    public MovieViewHoder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.movie_item,
                 parent,
                 false
         );
-        return new MovieViewHoder(view);
+        return new MovieViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieViewHoder holder, int position) {
-        Log.d("MovieAdapter", "onBindViewHolder" + position);
+    public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Movie movie = movieList.get(position);
 
         Glide.with(holder.itemView)
@@ -68,6 +72,15 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHod
 
         holder.textViewRating.setText(String.valueOf(Math.round(rating*10.0)/10.0));
 
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (onClickListener != null){
+                    onClickListener.onClick(movie);
+                }
+            }
+        });
+
         if (position >= movieList.size() - 20 && onReachEndListener != null){
             onReachEndListener.onReachEnd();
         }
@@ -82,12 +95,16 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHod
         void onReachEnd();
     }
 
-    static class MovieViewHoder extends RecyclerView.ViewHolder{
+    interface onClickListener{
+        void onClick(Movie movie);
+    }
+
+    static class MovieViewHolder extends RecyclerView.ViewHolder{
 
         private final ImageView imageViewPoster;
         private final TextView textViewRating;
 
-        public MovieViewHoder(@NonNull View itemView) {
+        public MovieViewHolder(@NonNull View itemView) {
             super(itemView);
             imageViewPoster = itemView.findViewById(R.id.ImageViewPoster);
             textViewRating = itemView.findViewById(R.id.TextViewRating);

@@ -3,6 +3,9 @@ package com.example.movies;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import static com.example.movies.MovieDetailActivity.newIntent;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
@@ -62,6 +65,14 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     progressBar.setVisibility(GONE);
                 }
+            }
+        });
+
+        movieAdapter.setOnClickListener(new MovieAdapter.onClickListener() {
+            @Override
+            public void onClick(Movie movie) {
+                Intent intent = newIntent(MainActivity.this, movie);
+                startActivity(intent);
             }
         });
 

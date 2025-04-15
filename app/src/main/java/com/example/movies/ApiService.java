@@ -10,6 +10,6 @@ import retrofit2.http.Query;
 public interface ApiService {
 
     @GET("movie?limit=40&notNullFields=rating.kp&notNullFields=poster.url&notNullFields=description&rating.kp=4-10&sortField=votes.kp&sortType=-1&type=movie")
-    @Headers("X-API-KEY:your_key")
+    @Headers("X-API-KEY:yourKey")
     Single<MovieResponse> loadMovies(@Query("page") int page);
 }
