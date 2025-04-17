@@ -3,6 +3,7 @@ package com.example.movies;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -10,6 +11,11 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -36,7 +42,23 @@ public class MovieDetailActivity extends AppCompatActivity {
         textViewDescription.setText(movie.getDescription());
         textViewTitle.setText(movie.getName());
 
+        Disposable disposable = ApiFactory.apiService.loadTrailers(movie.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<TrailersResponse>() {
+                    @Override
+                    public void accept(TrailersResponse trailersResponse) throws Throwable {
+                        Log.d("MovieDetailActivity", trailersResponse.toString());
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Throwable {
+                        Log.d("MovieDetailActivity", throwable.toString());
+                    }
+                });
     }
+
+
 
     private void initViews(){
         imageViewPosterDetail = findViewById(R.id.ImageViewPosterDetail);
