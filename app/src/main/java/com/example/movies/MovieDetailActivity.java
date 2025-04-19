@@ -9,8 +9,13 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+
+import java.util.List;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
@@ -20,6 +25,8 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 public class MovieDetailActivity extends AppCompatActivity {
 
     private static final String EXTRA_MOVIE = "Movie";
+
+    private MovieDetailViewModel movieDetailViewModel;
 
     private ImageView imageViewPosterDetail;
     private TextView textViewTitle;
@@ -33,6 +40,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_movie);
         initViews();
 
+        movieDetailViewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
         Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
 
         Glide.with(this)
@@ -42,20 +50,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         textViewDescription.setText(movie.getDescription());
         textViewTitle.setText(movie.getName());
 
-        Disposable disposable = ApiFactory.apiService.loadTrailers(movie.getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<TrailersResponse>() {
-                    @Override
-                    public void accept(TrailersResponse trailersResponse) throws Throwable {
-                        Log.d("MovieDetailActivity", trailersResponse.toString());
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Throwable {
-                        Log.d("MovieDetailActivity", throwable.toString());
-                    }
-                });
+        movieDetailViewModel.loadTrailers(movie.getId());
+
+        movieDetailViewModel.getListMutableLiveData().observe(this, new Observer<List<Trailer>>() {
+            @Override
+            public void onChanged(List<Trailer> trailers) {
+                Log.d("MovieDetailActivity", trailers.toString());
+            }
+        });
     }
 
 
