@@ -43,12 +43,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initViews();
 
-        movieAdapter = new MovieAdapter();
-
         recyclerView.setAdapter(movieAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-
-        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
 
         viewModel.getMovies().observe(this, new Observer<List<Movie>>() {
             @Override
@@ -86,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void initViews(){
+        movieAdapter = new MovieAdapter();
+        viewModel = new ViewModelProvider(this).get(MainViewModel.class);
+
         progressBar = findViewById(R.id.ProgressBarLoading);
         recyclerView = findViewById(R.id.RecyclerViewMovies);
     }

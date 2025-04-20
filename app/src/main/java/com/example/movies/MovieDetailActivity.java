@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 
@@ -27,6 +29,8 @@ public class MovieDetailActivity extends AppCompatActivity {
     private static final String EXTRA_MOVIE = "Movie";
 
     private MovieDetailViewModel movieDetailViewModel;
+    private TrailerAdapter trailerAdapter;
+    private RecyclerView recyclerView;
 
     private ImageView imageViewPosterDetail;
     private TextView textViewTitle;
@@ -40,7 +44,9 @@ public class MovieDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail_movie);
         initViews();
 
-        movieDetailViewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
+        recyclerView.setAdapter(trailerAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         Movie movie = (Movie) getIntent().getSerializableExtra(EXTRA_MOVIE);
 
         Glide.with(this)
@@ -55,7 +61,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         movieDetailViewModel.getListMutableLiveData().observe(this, new Observer<List<Trailer>>() {
             @Override
             public void onChanged(List<Trailer> trailers) {
-                Log.d("MovieDetailActivity", trailers.toString());
+                trailerAdapter.setTrailerList(trailers);
             }
         });
     }
@@ -63,6 +69,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
 
     private void initViews(){
+        trailerAdapter = new TrailerAdapter();
+        recyclerView = findViewById(R.id.RecyclerViewTrailers);
+        movieDetailViewModel = new ViewModelProvider(this).get(MovieDetailViewModel.class);
+
         imageViewPosterDetail = findViewById(R.id.ImageViewPosterDetail);
         textViewTitle = findViewById(R.id.TextViewTitle);
         textViewYear = findViewById(R.id.TextViewYear);
