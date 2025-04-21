@@ -2,15 +2,14 @@ package com.example.movies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
-
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
-import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Consumer;
-import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -62,6 +56,15 @@ public class MovieDetailActivity extends AppCompatActivity {
             @Override
             public void onChanged(List<Trailer> trailers) {
                 trailerAdapter.setTrailerList(trailers);
+            }
+        });
+
+        trailerAdapter.setOnTrailerClickListener(new TrailerAdapter.onTrailerClickListener() {
+            @Override
+            public void onTrailerClick(Trailer trailer) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(trailer.getUrl()));
+                startActivity(intent);
             }
         });
     }
