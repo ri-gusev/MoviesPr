@@ -13,6 +13,13 @@ public class Poster implements Serializable {
         this.url = url;
     }
 
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public Poster() {
+    }
+
     public String getUrl() {
         return url;
     }

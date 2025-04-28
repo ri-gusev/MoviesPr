@@ -1,5 +1,6 @@
 package com.example.movies;
 
+import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -89,6 +90,11 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         });
 
+        //Just to check does the code work correctly (it is)
+        MovieDao movieDao = MovieDatabase.getInstance(getApplication()).movieDao();
+        movieDao.insert(movie)
+                .subscribeOn(Schedulers.io())
+                .subscribe();
 
     }
 
