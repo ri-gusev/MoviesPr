@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             app:layout_constraintTop_toBottomOf="@+id/TextViewDescription"
-            tools:listitem="@layout/trailer_item"/>
+            tools:listitem="@layout/trailer_item" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/RecyclerViewReviews"
@@ -78,7 +78,18 @@
             android:layout_height="wrap_content"
             android:nestedScrollingEnabled="false"
             app:layout_constraintTop_toBottomOf="@+id/RecyclerViewTrailers"
-            tools:listitem="@layout/review_item"/>
+            tools:listitem="@layout/review_item" />
+
+        <ImageView
+            android:id="@+id/ImageViewFlag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="75dp"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="@id/ImageCardView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ImageCardView"
+            tools:src="@drawable/orange_flag" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
